@@ -1,10 +1,8 @@
 import wretch from "wretch";
 
-const API_KEY = "LN4ETII6SQ67LZXH";
-
-export const getStockQuote = ticker => {
+export const getStockQuote = () => {
   return wretch(
-    `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${ticker}&apikey=${API_KEY}`
+    `https://api.iextrading.com/1.0/stock/market/batch?symbols=fb,aapl,amzn,nflx,goog&types=quote`
   )
     .get()
     .json();
