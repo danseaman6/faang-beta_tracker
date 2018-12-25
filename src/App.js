@@ -12,31 +12,83 @@ class App extends Component {
   columns = [
     {
       Header: "Stock",
-      accessor: "symbol"
+      columns: [
+        {
+          Header: "Ticker",
+          accessor: "symbol",
+          Cell: row =>
+            row.value === "SPY" ? (
+              <div
+                style={{
+                  backgroundColor: "#FFFACD"
+                }}
+              >
+                {row.value}
+              </div>
+            ) : (
+              row.value
+            )
+        },
+        {
+          Header: "Company",
+          accessor: "companyName"
+        },
+        {
+          Header: "Exchange",
+          accessor: "primaryExchange"
+        }
+      ]
     },
     {
-      Header: "Open",
-      accessor: "open"
+      Header: "Today",
+      columns: [
+        {
+          Header: "Open",
+          accessor: "open"
+        },
+        {
+          Header: "Price",
+          accessor: "latestPrice"
+        },
+        {
+          Header: "Close",
+          accessor: "close"
+        }
+      ]
     },
     {
-      Header: "Price",
-      accessor: "latestPrice"
-    },
-    {
-      Header: "Close",
-      accessor: "close"
-    },
-    {
-      Header: "High",
-      accessor: "high"
-    },
-    {
-      Header: "Low",
-      accessor: "low"
+      Header: "52-Week",
+      columns: [
+        {
+          Header: "High",
+          accessor: "week52High"
+        },
+        {
+          Header: "Low",
+          accessor: "week52Low"
+        },
+        {
+          Header: "Change",
+          accessor: "ytdChange",
+          Cell: row => (
+            <div
+              style={{
+                backgroundColor: row.value < 0 ? "#F08080" : "#98FB98"
+              }}
+            >
+              {`${(row.value * 100).toFixed(2)}%`}
+            </div>
+          )
+        }
+      ]
     }
   ];
 
   componentDidMount() {
+    this.getStockData();
+  }
+
+  getStockData() {
     getStockQuote().then(response => {
       let stockData = [];
       Object.keys(response).forEach(key => {
@@ -49,7 +101,11 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <ReactTable data={this.state.stockData} columns={this.columns} />
+        <ReactTable
+          className="-striped -highlight"
+          data={this.state.stockData}
+          columns={this.columns}
+        />
       </div>
     );
   }
